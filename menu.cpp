@@ -34,7 +34,13 @@ void d_create_contact(PCB &plate)
     get_num(x);
     cout << "enter y: ";
     get_num(y);
-    plate.create_contact(type, x, y);
+
+    try {
+        plate.create_contact(type, x, y);
+    }
+    catch (std::bad_alloc &ba) {
+        std::cout << "you haven't enough memory: " << ba.what() << std::endl;
+    }
 }
 
 void d_add_contact(PCB &plate)
@@ -47,7 +53,13 @@ void d_add_contact(PCB &plate)
     get_num(cnt.x);
     cout << "enter y: ";
     get_num(cnt.y);
-    plate + cnt;
+
+    try {
+        plate += cnt;
+    }
+    catch (std::bad_alloc &ba) {
+        std::cout << "you haven't enough memory: " << ba.what() << std::endl;
+    }
 }
 
 void d_select_group(PCB plate)
@@ -80,15 +92,19 @@ int dialog()
                 get_num(size);
                 d_create_PCB(plate, size);
                 break;
+
             case 2:
                 d_create_contact(plate);
                 break;
+
             case 3:
                 cout << plate;
                 break;
+
             case 4:
                 d_add_contact(plate);
                 break;
+
             case 5:
                 int name1, name2;
                 cout << "enter 1st name: ";
@@ -98,9 +114,11 @@ int dialog()
                 if (plate.establish_connect(name1, name2))
                     cout << "contacts of the same type" << endl;
                 break;
+
             case 6:
                 d_select_group(plate);
                 break;
+
             case 7:
                 int name3, name4;
                 cout << "enter 1st name: ";
@@ -110,6 +128,7 @@ int dialog()
                 if (plate.get_track_length(name3, name4))
                     cout << "contacts of the same type" << endl;
                 break;
+
             default:
                 return 0;
         }

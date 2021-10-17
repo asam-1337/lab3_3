@@ -7,6 +7,53 @@
 
 namespace PCB_1
 {
+    //constructors
+    PCB::PCB() :sz(QUOTA),curr_sz(0), arr(new contact[QUOTA]) {}
+
+    PCB::PCB(const PCB & plate) : sz(plate.sz), curr_sz(plate.curr_sz)
+    {
+        arr = new contact[plate.sz];
+        for (int i = 0; i < curr_sz; i++)
+            arr[i] = plate.arr[i];
+    }
+
+    PCB::PCB(PCB && plate) noexcept : sz(plate.sz), curr_sz(plate.curr_sz), arr(plate.arr)
+    {
+        plate.arr = nullptr;
+    }
+
+    //methods
+    PCB & PCB::operator = (const PCB & plate)
+    {
+        if (this != &plate)
+        {
+            sz = plate.sz;
+            curr_sz = plate.curr_sz;
+            delete[] arr;
+            arr = new contact[sz];
+            for (int i = 0; i < curr_sz; i++)
+                arr[i] = plate.arr[i];
+        }
+        return *this;
+    }
+
+    PCB & PCB::operator = (PCB && plate) noexcept
+    {
+        int tmp = curr_sz;
+        curr_sz = plate.curr_sz;
+        plate.curr_sz = tmp;
+
+        tmp = sz;
+        sz = plate.sz;
+        plate.sz = tmp;
+
+        contact *ptr = arr;
+        arr = plate.arr;
+        plate.arr = ptr;
+
+        return *this;
+    }
+
     void PCB::create_contact(bool type, double x, double y)
     {
         if (curr_sz == sz)
@@ -25,7 +72,7 @@ namespace PCB_1
         curr_sz++;
     }
 
-    void PCB::operator + (const contact &src)
+    PCB & PCB::operator += (const contact &src)
     {
         if (curr_sz == sz)
         {
@@ -38,12 +85,13 @@ namespace PCB_1
         }
         arr[curr_sz] = src;
         curr_sz++;
+        return *this;
     }
 
     int PCB::establish_connect(int name1, int name2)
     {
         if ((arr[name1].exist && arr[name2].exist) && (arr[name1].connect < 0 && arr[name2].connect < 0))
-            if (arr[name1].type && !arr[name2].type || (!arr[name1].type && arr[name2].type))
+            if (arr[name1].type != arr[name2].type)
             {
                 arr[name1].connect = name2;
                 arr[name2].connect = name1;
@@ -55,8 +103,7 @@ namespace PCB_1
     int PCB::correction_check(int name1, int name2)
     {
         if (arr[name1].exist && arr[name2].exist)
-            if ((arr[name1].type && !arr[name2].type)
-                || (!arr[name1].type && arr[name2].type))
+            if (arr[name1].type != arr[name2].type)
                 return 0;
         return 1;
 
