@@ -3,6 +3,8 @@
 //
 
 #include "menu.h"
+#include <exception>
+#include <stdexcept>
 
 using namespace std;
 using namespace PCB_1;
@@ -10,33 +12,25 @@ using namespace PCB_1;
 void d_create_PCB(PCB & plate, int size)
 {
     int i = 0;
-    bool type;
-    double x, y;
-    while (i < size) {
-        cout << "enter type: ";
-        get_num(type);
-        cout << "enter x: ";
-        get_num(x);
-        cout << "enter y: ";
-        get_num(y);
-        plate.create_contact(type, x ,y);
+
+    while (i < size)
+    {
+        try {
+            cout << "enter type: ";
+            cin >> plate;
+        }
+        catch (std::bad_alloc &ba) {
+            std::cout << "you haven't enough memory: " << ba.what() << std::endl;
+        }
         i++;
     }
 }
 
 void d_create_contact(PCB &plate)
 {
-    bool type;
-    double x, y;
-    cout << "enter type: ";
-    get_num(type);
-    cout << "enter x: ";
-    get_num(x);
-    cout << "enter y: ";
-    get_num(y);
-
     try {
-        plate.create_contact(type, x, y);
+        cout << "enter type: ";
+        cin >> plate;
     }
     catch (std::bad_alloc &ba) {
         std::cout << "you haven't enough memory: " << ba.what() << std::endl;

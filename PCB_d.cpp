@@ -23,7 +23,7 @@ namespace PCB_1
     }
 
     //methods
-    PCB & PCB::operator = (const PCB & plate)
+    PCB & PCB::operator = (const PCB & plate) // копирование
     {
         if (this != &plate)
         {
@@ -37,7 +37,7 @@ namespace PCB_1
         return *this;
     }
 
-    PCB & PCB::operator = (PCB && plate) noexcept
+    PCB & PCB::operator = (PCB && plate) noexcept // перемещение
     {
         int tmp = curr_sz;
         curr_sz = plate.curr_sz;
@@ -54,22 +54,29 @@ namespace PCB_1
         return *this;
     }
 
-    void PCB::create_contact(bool type, double x, double y)
+    std::istream & operator >> (std::istream & buff, PCB & plate)
     {
-        if (curr_sz == sz)
+        if (plate.curr_sz == plate.sz)
         {
-            sz += QUOTA;
-            contact *old = arr;
-            arr = new contact[sz];
-            for (int i = 0; i < curr_sz; ++i)
-                arr[i] = old[i];
+            plate.sz += plate.QUOTA;
+            contact *old = plate.arr;
+            plate.arr = new contact[plate.sz];
+            for (int i = 0; i < plate.curr_sz; ++i)
+                plate.arr[i] = old[i];
             delete[] old;
         }
-        arr[curr_sz].exist = true;
-        arr[curr_sz].type = type;
-        arr[curr_sz].x = x;
-        arr[curr_sz].y = y;
-        curr_sz++;
+
+        plate.arr[plate.curr_sz].exist = true;
+        buff >> plate.arr[plate.curr_sz].type;
+
+        std::cout << "enter x: ";
+        get_num(plate.arr[plate.curr_sz].x);
+
+        std::cout << "enter y: ";
+        get_num(plate.arr[plate.curr_sz].y);
+        plate.curr_sz++;
+
+        return buff;
     }
 
     PCB & PCB::operator += (const contact &src)

@@ -9,6 +9,23 @@
 #include <iostream>
 
 namespace PCB_1 {
+    template <class T>
+    int get_num(T& a) {
+        std::cin >> a;
+
+        while (!std::cin.good()) {
+            if (std::cin.bad()) throw std::runtime_error("Fatal error");
+            if (std::cin.eof()) return 1;
+
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            std::cout << "Invalid input. Please, try again." << std::endl;
+            std::cin >> a;
+        }
+        return 0;
+    }
+
     struct contact {
         bool exist;
         bool type; //F - out, T - in
@@ -52,11 +69,12 @@ namespace PCB_1 {
         PCB & operator = (PCB && pl) noexcept ;
         PCB & operator += (const contact & src);
 
-        void create_contact(bool type, double x, double y);
         int establish_connect(int name1, int name2);
         int correction_check(int name1, int name2);
         int get_track_length(int name1, int name2);
         void select_group(int type);
+
+        friend std::istream & operator >> (std::istream & buff, PCB & plate);
         friend std::ostream & operator << (std::ostream& buff, const PCB & plate);
     };
 }
