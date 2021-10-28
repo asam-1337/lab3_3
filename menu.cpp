@@ -56,12 +56,12 @@ void d_add_contact(PCB &plate)
     }
 }
 
-void d_select_group(PCB plate)
+void d_select_group(PCB const & plate)
 {
     bool type;
     cout << "enter type: ";
     get_num(type);
-    plate.select_group(type);
+    cout << plate.select_group(type);
 }
 
 int dialog()
@@ -119,8 +119,12 @@ int dialog()
                 get_num(name3);
                 cout << "enter 2nd name: ";
                 get_num(name4);
-                if (plate.get_track_length(name3, name4))
-                    cout << "contacts of the same type" << endl;
+                try {
+                    cout << plate.get_track_length(name3, name4) << endl;
+                }
+                catch(std::logic_error &err) {
+                    cout << "Logic error: " << err.what() << endl;
+                }
                 break;
 
             default:

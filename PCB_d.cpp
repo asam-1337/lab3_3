@@ -97,54 +97,48 @@ namespace PCB_1
 
     int PCB::establish_connect(int name1, int name2)
     {
-        if ((arr[name1].exist && arr[name2].exist) && (arr[name1].connect < 0 && arr[name2].connect < 0))
-            if (arr[name1].type != arr[name2].type)
-            {
-                arr[name1].connect = name2;
-                arr[name2].connect = name1;
-                return 0;
-            }
-        return 1;
-    }
-
-    int PCB::correction_check(int name1, int name2)
-    {
-        if (arr[name1].exist && arr[name2].exist)
-            if (arr[name1].type != arr[name2].type)
-                return 0;
-        return 1;
-
-    }
-
-    int PCB::get_track_length(int name1, int name2)
-    {
-        if (!correction_check(name1, name2))
+        if (!correction_check(name1, name2) && (arr[name1].connect < 0 && arr[name2].connect < 0))
         {
-            std::cout
-                    << "d = "
-                    << sqrt(pow(arr[name1].x - arr[name2].x,2) + pow(arr[name1].x - arr[name2].y, 2));
+            arr[name1].connect = name2;
+            arr[name2].connect = name1;
             return 0;
         }
         return 1;
     }
 
-    void PCB::select_group(int type)
+    int PCB::correction_check(int name1, int name2) const
     {
-        int j = 0;
-        PCB plate;
-
-        for (int i = 0; i < sz && this->arr[i].exist; i++)
-            if (this->arr[i].type == type) {
-                plate.arr[j] = this->arr[i];
-                j++;
-            }
-
-        std::cout << plate;
+        if (arr[name1].exist && arr[name2].exist)
+            if (arr[name1].type != arr[name2].type)
+                return 0;
+        return 1;
     }
 
-    std::ostream & operator << (std::ostream& buff, const PCB & plate){
-        buff << "number\t|\ttype\t|\tconnect\t|\tcoords" << std:: endl;
-        for (int i = 0; plate.arr[i].exist && i < plate.sz; i++)
+    double PCB::get_track_length(int name1, int name2) const
+    {
+        if (correction_check(name1, name2))
+            throw std::logic_error("contact the same of type");
+
+        return sqrt(pow(arr[name1].x - arr[name2].x,2) + pow(arr[name1].x - arr[name2].y, 2));
+    }
+
+    PCB & PCB::select_group(int type) const
+    {
+        static PCB plate;
+
+        for (int i = 0; i < curr_sz; i++)
+        {
+            if (arr[i].type == type)
+                plate += arr[i];
+        }
+
+        return plate;
+    }
+
+    std::ostream & operator << (std::ostream& buff, const PCB & plate)
+    {
+        buff << "number\t|\ttype\t|\tconnect\t|\tcoords" << std::endl;
+        for (int i = 0; i < plate.curr_sz; i++)
         {
             buff
                     << i

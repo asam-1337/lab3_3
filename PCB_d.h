@@ -70,9 +70,9 @@ namespace PCB_1 {
         PCB & operator += (const contact & src);
 
         int establish_connect(int name1, int name2);
-        int correction_check(int name1, int name2);
-        int get_track_length(int name1, int name2);
-        void select_group(int type);
+        int correction_check(int name1, int name2) const;
+        double get_track_length(int name1, int name2) const;
+        PCB & select_group(int type) const;
 
         friend std::istream & operator >> (std::istream & buff, PCB & plate);
         friend std::ostream & operator << (std::ostream& buff, const PCB & plate);
