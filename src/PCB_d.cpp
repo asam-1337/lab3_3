@@ -2,7 +2,7 @@
 // Created by chicha-man on 14.10.2021.
 //
 
-#include "PCB_d.h"
+#include "../src/PCB_d.h"
 #include <cmath>
 
 namespace PCB_1
@@ -122,7 +122,7 @@ namespace PCB_1
         return sqrt(pow(arr[name1].x - arr[name2].x,2) + pow(arr[name1].x - arr[name2].y, 2));
     }
 
-    PCB & PCB::select_group(int type) const
+    PCB & PCB::select_group(bool type) const
     {
         static PCB plate;
 

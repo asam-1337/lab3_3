@@ -28,14 +28,14 @@ namespace PCB_1 {
 
     struct contact {
         bool exist;
-        bool type; //F - out, T - in
+        bool type; ///F - out, T - in
         int connect;
         double x;
         double y;
 
-        //constructors
-        contact(){
-            exist = false;
+        ///constructors
+        contact() {
+            exist = true;
             type = false;
             connect = -1;
             x = 0;
@@ -53,28 +53,41 @@ namespace PCB_1 {
         int curr_sz;
         contact *arr;
     public:
-        //constructors
+        ///constructors
         PCB();
+
         PCB(const PCB & plate);
+
         PCB(PCB && plate) noexcept ;
+
         ~PCB() {delete[] arr;}
 
-        //getters
+        ///getters
         int getSZ() const {return sz;}
+
         int getCurr_sz() const {return curr_sz;}
+
         contact * getARR() {return arr;}
 
-        //methods
+        ///methods
         PCB & operator = (const PCB & pl);
+
         PCB & operator = (PCB && pl) noexcept ;
+
         PCB & operator += (const contact & src);
 
+
         int establish_connect(int name1, int name2);
-        int correction_check(int name1, int name2) const;
-        double get_track_length(int name1, int name2) const;
-        PCB & select_group(int type) const;
+
+        [[nodiscard]] int correction_check(int name1, int name2) const;
+
+        [[nodiscard]] double get_track_length(int name1, int name2) const;
+
+        [[nodiscard]] PCB & select_group(bool type) const;
+
 
         friend std::istream & operator >> (std::istream & buff, PCB & plate);
+
         friend std::ostream & operator << (std::ostream& buff, const PCB & plate);
     };
 }
