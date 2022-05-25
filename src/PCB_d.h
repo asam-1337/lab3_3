@@ -7,6 +7,7 @@
 
 
 #include <iostream>
+#include <limits>
 
 namespace PCB_1 {
     template <class T>
